@@ -143,7 +143,7 @@ function parseCsv(content) {
     throw new Error('The CSV file must include a header row and at least one data row.');
   }
 
-  const headers = rows[0].map((header) => normalizeHeader(header));
+  const headers = getNormalizedHeaders(rows[0]);
 
   return rows.slice(1).map((row, rowIndex) => {
     if (row.length !== headers.length) {
@@ -157,6 +157,18 @@ function parseCsv(content) {
       return document;
     }, {});
   });
+}
+
+function getNormalizedHeaders(rawHeaders) {
+  const normalizedHeaders = rawHeaders.map((header) => normalizeHeader(header));
+  const duplicates = normalizedHeaders.filter((header, index) => normalizedHeaders.indexOf(header) !== index);
+
+  if (duplicates.length > 0) {
+    const duplicateHeaders = [...new Set(duplicates)].join(', ');
+    throw new Error(`Duplicated CSV headers after normalization: ${duplicateHeaders}.`);
+  }
+
+  return normalizedHeaders;
 }
 
 function normalizeValue(fieldName, rawValue) {
@@ -201,24 +213,16 @@ function toDate(value) {
   return parsedValue;
 }
 
-function isDuplicateKeyError(error) {
+function getDuplicateWriteErrors(error) {
   if (!error) {
-    return false;
+    return [];
   }
 
-  if (error.code === 11000) {
-    return true;
+  if (Array.isArray(error.writeErrors)) {
+    return error.writeErrors.filter((item) => item.code === 11000);
   }
 
-  return Array.isArray(error.writeErrors) && error.writeErrors.every((item) => item.code === 11000);
-}
-
-function countDuplicateErrors(error) {
-  if (!Array.isArray(error.writeErrors)) {
-    return error.code === 11000 ? 1 : 0;
-  }
-
-  return error.writeErrors.filter((item) => item.code === 11000).length;
+  return error.code === 11000 ? [error] : [];
 }
 
 async function importCsv() {
@@ -247,8 +251,10 @@ async function importCsv() {
       `Imported ${insertedDocuments.length} records into ${modelName} from ${absoluteCsvPath}`
     );
   } catch (error) {
-    if (options.skipDuplicates && isDuplicateKeyError(error)) {
-      const duplicateCount = countDuplicateErrors(error);
+    const duplicateWriteErrors = getDuplicateWriteErrors(error);
+
+    if (options.skipDuplicates && duplicateWriteErrors.length > 0 && duplicateWriteErrors.length === error.writeErrors?.length) {
+      const duplicateCount = duplicateWriteErrors.length;
       const insertedCount = Math.max(documents.length - duplicateCount, 0);
 
       console.log(

@@ -17,11 +17,13 @@ const userIds = {
 const petIds = {
   nala: crypto.randomUUID(),
   milo: crypto.randomUUID(),
+  betty: crypto.randomUUID(),
 };
 
 const appointmentIds = {
   first: crypto.randomUUID(),
   second: crypto.randomUUID(),
+  third: crypto.randomUUID(),
 };
 
 const users = [
@@ -111,7 +113,7 @@ const appointments = [
     pet_id: petIds.betty,
     user_id: userIds.client,
     veterinary_id: userIds.vet,
-    date: new Date('2026-10-02T16:30:00.000Z'),
+    date: new Date('2026-10-02T12:00:00.000Z'),
     hour: '12:00',
     reason: 'Revision general',
     state: 'completed',
