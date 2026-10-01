@@ -26,98 +26,96 @@ const appointmentIds = {
   third: crypto.randomUUID(),
 };
 
-const users = [
+const DEMO_USERS = [
   {
-    user_id: userIds.admin,
-    username: 'Sara Admin',
+    userId: userIds.admin,
+    username: 'Sara Manzano',
     email: 'admin@wavet.local',
     password: 'admin123',
-    rol: 'admin',
+    role: 'admin',
     telephone: '600111222',
   },
   {
-    user_id: userIds.client,
+    userId: userIds.client,
     username: 'Laura Perez',
     email: 'laura@wavet.local',
     password: 'laura123',
-    rol: 'user',
+    role: 'user',
     telephone: '600333444',
   },
   {
-    user_id: userIds.vet,
+    userId: userIds.vet,
     username: 'Dr. Marcos Ruiz',
     email: 'marcos@wavet.local',
     password: 'vet123',
-    rol: 'veterinario',
+    role: 'veterinarian',
     telephone: '600555666',
   },
 ];
 
-const pets = [
+const DEMO_PETS = [
   {
-    pet_id: petIds.nala,
-    user_id: userIds.client,
+    petId: petIds.nala,
+    userId: userIds.client,
     name: 'Nala',
-    species: 'Perro',
+    species: 'Dog',
     breed: 'Labrador',
     age: 4,
-    photo_url: 'https://unsplash.com/es/fotos/golden-retriever-x5oPmHmY3kQ',
+    photoUrl: 'https://unsplash.com/es/fotos/golden-retriever-x5oPmHmY3kQ',
   },
   {
-    pet_id: petIds.milo,
-    user_id: userIds.client,
+    petId: petIds.milo,
+    userId: userIds.client,
     name: 'Milo',
-    species: 'Gato',
-    breed: 'Europeo',
+    species: 'Cat',
+    breed: 'European Shorthair',
     age: 2,
-    photo_url: 'https://unsplash.com/es/fotos/gato-atigrado-en-el-alfeizar-blanco-de-la-ventana-DpTvVy6jgQg',
+    photoUrl: 'https://unsplash.com/es/fotos/gato-atigrado-en-el-alfeizar-blanco-de-la-ventana-DpTvVy6jgQg',
   },
-   {
-    pet_id: petIds.betty,
-    user_id: userIds.client,
+  {
+    petId: petIds.betty,
+    userId: userIds.client,
     name: 'Betty',
-    species: 'Conejo',
-    breed: 'Belier',
+    species: 'Rabbit',
+    breed: 'Lop',
     age: 4,
-    photo_url: 'https://unsplash.com/es/fotos/conejo-blanco-sobre-tela-rosa-eXLCx0XBaUE',
+    photoUrl: 'https://unsplash.com/es/fotos/conejo-blanco-sobre-tela-rosa-eXLCx0XBaUE',
   },
 ];
 
-
-
-const appointments = [
+const DEMO_APPOINTMENTS = [
   {
-    appointment_id: appointmentIds.first,
-    pet_id: petIds.nala,
-    user_id: userIds.client,
-    veterinary_id: userIds.vet,
+    appointmentId: appointmentIds.first,
+    petId: petIds.nala,
+    userId: userIds.client,
+    veterinarianId: userIds.vet,
     date: new Date('2026-10-01T10:00:00.000Z'),
     hour: '10:00',
-    reason: 'Vacunacion anual',
+    reason: 'Booster vaccine and annual checkup',
     state: 'pending',
-    medical_notes: null,
+    medicalNotes: null,
   },
   {
-    appointment_id: appointmentIds.second,
-    pet_id: petIds.milo,
-    user_id: userIds.client,
-    veterinary_id: userIds.vet,
+    appointmentId: appointmentIds.second,
+    petId: petIds.milo,
+    userId: userIds.client,
+    veterinarianId: userIds.vet,
     date: new Date('2026-10-02T16:30:00.000Z'),
     hour: '16:30',
-    reason: 'Revision general',
+    reason: 'Reduced appetite since yesterday',
     state: 'completed',
-    medical_notes: 'Sin hallazgos relevantes.',
+    medicalNotes: 'Stable during the visit. Advised observation and a soft diet for 24 hours.',
   },
   {
-    appointment_id: appointmentIds.third,
-    pet_id: petIds.betty,
-    user_id: userIds.client,
-    veterinary_id: userIds.vet,
+    appointmentId: appointmentIds.third,
+    petId: petIds.betty,
+    userId: userIds.client,
+    veterinarianId: userIds.vet,
     date: new Date('2026-10-02T12:00:00.000Z'),
     hour: '12:00',
-    reason: 'Revision general',
+    reason: 'Follow-up after nail injury',
     state: 'completed',
-    medical_notes: 'Sin hallazgos relevantes.',
+    medicalNotes: 'The paw is healing well. No swelling and no signs of infection.',
   },
 ];
 
@@ -131,9 +129,9 @@ async function seedDatabase() {
     await Pet.deleteMany({});
     await User.deleteMany({});
 
-    await User.insertMany(users);
-    await Pet.insertMany(pets);
-    await Appointment.insertMany(appointments);
+    await User.insertMany(DEMO_USERS);
+    await Pet.insertMany(DEMO_PETS);
+    await Appointment.insertMany(DEMO_APPOINTMENTS);
 
     console.log('Seed completed successfully.');
   } finally {
