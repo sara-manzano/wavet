@@ -16,27 +16,35 @@ const MODELS = {
 };
 
 const HEADER_ALIASES = {
-  id_usuario: 'user_id',
-  usuario_id: 'user_id',
-  id_mascota: 'pet_id',
-  mascota_id: 'pet_id',
-  id_veterinario: 'veterinary_id',
-  veterinario_id: 'veterinary_id',
+  id_usuario: 'userId',
+  usuario_id: 'userId',
+  user_id: 'userId',
+  id_mascota: 'petId',
+  mascota_id: 'petId',
+  pet_id: 'petId',
+  id_veterinario: 'veterinarianId',
+  veterinario_id: 'veterinarianId',
+  veterinary_id: 'veterinarianId',
+  veterinarian_id: 'veterinarianId',
   telefono: 'telephone',
   telefono_contacto: 'telephone',
-  rol_usuario: 'rol',
+  rol_usuario: 'role',
+  rol: 'role',
+  role: 'role',
   especie: 'species',
   raza: 'breed',
   edad: 'age',
   motivo: 'reason',
   estado: 'state',
-  notas_medicas: 'medical_notes',
+  notas_medicas: 'medicalNotes',
+  medical_notes: 'medicalNotes',
   fecha: 'date',
   hora: 'hour',
   nombre: 'name',
   correo: 'email',
   contrasena: 'password',
-  foto_url: 'photo_url',
+  foto_url: 'photoUrl',
+  photo_url: 'photoUrl',
 };
 
 const FIELD_TRANSFORMS = {
@@ -76,7 +84,7 @@ function parseArgs(argv) {
   const Model = MODELS[modelName];
 
   if (!Model) {
-    throw new Error(`Unsupported model "${modelName}". Use users, pets or appointments.`);
+    throw new Error(`Unsupported model "${modelName}". Use users, pets, or appointments.`);
   }
 
   return {
@@ -140,7 +148,7 @@ function parseCsv(content) {
   }
 
   if (rows.length < 2) {
-    throw new Error('The CSV file must include a header row and at least one data row.');
+    throw new Error('The CSV must include a header row and at least one data row.');
   }
 
   const headers = getNormalizedHeaders(rows[0]);
@@ -148,7 +156,7 @@ function parseCsv(content) {
   return rows.slice(1).map((row, rowIndex) => {
     if (row.length !== headers.length) {
       throw new Error(
-        `Invalid CSV row ${rowIndex + 2}: expected ${headers.length} columns but found ${row.length}.`
+        `CSV row ${rowIndex + 2} is invalid: expected ${headers.length} columns but found ${row.length}.`
       );
     }
 
@@ -165,7 +173,7 @@ function getNormalizedHeaders(rawHeaders) {
 
   if (duplicates.length > 0) {
     const duplicateHeaders = [...new Set(duplicates)].join(', ');
-    throw new Error(`Duplicated CSV headers after normalization: ${duplicateHeaders}.`);
+    throw new Error(`Duplicate CSV headers found after normalization: ${duplicateHeaders}.`);
   }
 
   return normalizedHeaders;
@@ -197,7 +205,7 @@ function toNumber(value) {
   const parsedValue = Number(value);
 
   if (Number.isNaN(parsedValue)) {
-    throw new Error(`Invalid number value: "${value}".`);
+    throw new Error(`Value "${value}" is not a valid number.`);
   }
 
   return parsedValue;
@@ -207,7 +215,7 @@ function toDate(value) {
   const parsedValue = new Date(value);
 
   if (Number.isNaN(parsedValue.getTime())) {
-    throw new Error(`Invalid date value: "${value}".`);
+    throw new Error(`Value "${value}" is not a valid date.`);
   }
 
   return parsedValue;

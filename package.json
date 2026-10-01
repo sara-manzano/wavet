@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "check": "node --check src/app.js && node --check src/server.js && node --check src/config/auth.js && node --check src/config/db.js && node --check src/utils/http.js && node --check src/models/users.js && node --check src/middlewares/auth.js && node --check src/routes/auth.js && node --check src/routes/pets.js && node --check src/routes/appointments.js",
+    "check": "node --check src/app.js && node --check src/server.js && node --check src/config/auth.js && node --check src/config/db.js && node --check src/utils/http.js && node --check src/models/users.js && node --check src/models/pets.js && node --check src/models/appointments.js && node --check src/middlewares/auth.js && node --check src/routes/auth.js && node --check src/routes/pets.js && node --check src/routes/appointments.js && node --check src/scripts/import-csv.js && node --check src/scripts/seed.js && node --check src/scripts/smoke-api.js && node --check src/scripts/migrate-field-names.js",
     "import:csv": "node src/scripts/import-csv.js",
+    "migrate:fields": "node src/scripts/migrate-field-names.js",
     "seed": "node src/scripts/seed.js",
     "smoke:api": "node src/scripts/smoke-api.js"
   },
