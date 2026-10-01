@@ -9,17 +9,17 @@ function hashPassword(password) {
 }
 
 const userSchema = new mongoose.Schema({
-  user_id: { type: String, default: () => crypto.randomUUID(), required: true, unique: true },
-  username: { type: String, required: [true, 'El nombre de usuario es obligatorio'], trim: true },
-  email: { type: String, required: [true, 'El correo electrónico es obligatorio'], unique: true, trim: true, lowercase: true },
-  password: { type: String, required: [true, 'La contraseña es obligatoria'], select: false },
-  rol: { type: String, enum: ['user','veterinario','admin'], default: 'user' },
+  userId: { type: String, default: () => crypto.randomUUID(), required: true, unique: true },
+  username: { type: String, required: [true, 'Username is required.'], trim: true },
+  email: { type: String, required: [true, 'Email is required.'], unique: true, trim: true, lowercase: true },
+  password: { type: String, required: [true, 'Password is required.'], select: false },
+  role: { type: String, enum: ['user', 'veterinarian', 'admin'], default: 'user' },
   telephone: { type: String, trim: true },
 }, 
 { timestamps: true }
 );
 
-userSchema.methods.comparePassword = async function (candidatePassword) {
+userSchema.methods.comparePassword = function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -31,11 +31,10 @@ userSchema.pre('save', async function preSave() {
   this.password = await hashPassword(this.password);
 });
 
-userSchema.pre('insertMany', function preInsertMany(next, documents) {
-  const done = typeof next === 'function' ? next : () => {};
-  const usersToInsert = Array.isArray(documents) ? documents : Array.isArray(next) ? next : [];
+userSchema.pre('insertMany', async function preInsertMany(documents) {
+  const usersToInsert = Array.isArray(documents) ? documents : [];
 
-  Promise.all(
+  await Promise.all(
     usersToInsert.map(async (document) => {
       if (!document.password) {
         return;
@@ -43,9 +42,7 @@ userSchema.pre('insertMany', function preInsertMany(next, documents) {
 
       document.password = await hashPassword(document.password);
     }),
-  )
-    .then(() => done())
-    .catch(done);
+  );
 });
 
 module.exports = mongoose.model('User', userSchema);
